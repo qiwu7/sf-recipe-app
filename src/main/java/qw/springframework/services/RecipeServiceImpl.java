@@ -29,6 +29,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(Long id) {
-        return null;
+        return recipeRepository.findById(id).orElse(null);
     }
 }
