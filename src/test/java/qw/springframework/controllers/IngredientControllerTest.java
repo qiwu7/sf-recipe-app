@@ -1,6 +1,8 @@
 package qw.springframework.controllers;
 
+import qw.springframework.commands.IngredientCommand;
 import qw.springframework.commands.RecipeCommand;
+import qw.springframework.services.IngredientService;
 import qw.springframework.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +23,17 @@ public class IngredientControllerTest {
 
     @Mock
     private RecipeService recipeService;
+
+    @Mock
+    IngredientService ingredientService;
+
     private IngredientController controller;
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        controller = new IngredientController( recipeService);
+        controller = new IngredientController(recipeService, ingredientService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -43,6 +49,19 @@ public class IngredientControllerTest {
                 .andExpect(model().attributeExists("recipe"));
         //then
         verify(recipeService, times(1)).findCommandById(anyLong());
+    }
+
+    @Test
+    public void testShowIngredient() throws Exception {
+        //given
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        //when
+        when(ingredientService.findByRecipeIdAndIngredientId(anyLong(), anyLong())).thenReturn(ingredientCommand);
+        //then
+        mockMvc.perform(get("/recipe/1/ingredient/2/show.html"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/show.html"))
+                .andExpect(model().attributeExists("ingredient"));
     }
 
 }
