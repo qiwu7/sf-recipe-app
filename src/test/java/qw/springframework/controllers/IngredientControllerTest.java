@@ -68,7 +68,7 @@ public class IngredientControllerTest {
         //then
         mockMvc.perform(get("/recipe/1/ingredient/2/show"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("recipe/ingredient/show"))
+                .andExpect(view().name("recipe/ingredient/show.html"))
                 .andExpect(model().attributeExists("ingredient"));
     }
 
