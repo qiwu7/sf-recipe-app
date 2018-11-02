@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import qw.springframework.commands.RecipeCommand;
 import qw.springframework.domain.Recipe;
+import qw.springframework.exceptions.NotFoundException;
 import qw.springframework.services.RecipeService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -88,5 +89,12 @@ public class RecipeControllerTest {
                 andExpect(view().name("redirect:/"));
 
         verify(recipeService, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+        mockMvc.perform(get("/recipe/1/show"))
+                .andExpect(status().isNotFound());
     }
 }

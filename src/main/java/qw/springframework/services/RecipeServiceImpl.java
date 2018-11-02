@@ -7,9 +7,11 @@ import qw.springframework.commands.RecipeCommand;
 import qw.springframework.converters.RecipeCommandToRecipe;
 import qw.springframework.converters.RecipeToRecipeCommand;
 import qw.springframework.domain.Recipe;
+import qw.springframework.exceptions.NotFoundException;
 import qw.springframework.repositories.RecipeRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -37,7 +39,11 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(Long id) {
-        return recipeRepository.findById(id).orElse(null);
+        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        if (!recipeOptional.isPresent()) {
+            throw new NotFoundException("Recipe Not Found");
+        }
+        return recipeOptional.get();
     }
 
     @Override
